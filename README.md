@@ -10,6 +10,8 @@ W' = W + (α1 / r1) ⋅ (B1 ⋅ A1) + (α2 / r2) ⋅ (B2 ⋅ A2)
 
 where α1, r1 and α2, r2 are the scaling factors and ranks for the first and second LoRA models, respectively. The base model weights (W) are updated incrementally with the contributions of each LoRA module in a stepwise manner. The formula first applies the update from the first LoRA module (B1 ⋅ A1) scaled by (α1 / r1), modifying the base model weights to produce an intermediate state. Subsequently, the second module's update, (B2 ⋅ A2) scaled by (α2 / r2), is applied to this intermediate state, further refining the weights. Each step builds upon the results of the previous one.
 
+## Environment
+pip install -r requirements.txt
 
 ## Dataset
 ### SQuADv2 Dataset
@@ -25,36 +27,36 @@ Website: https://www.kaggle.com/datasets/gvaldenebro/cancer-q-and-a-dataset
 General Medical articles. 79 articles were used. Run the "extract_pdf_to_text.py" to extract text from PDF articles and save it into a text file for training and testing the Medical Autoregressive LoRA model.
 
 ## Conversion of Dataset
-Run the "save_general_qa_as_json.py" to save the training and validation json file for General QA LoRA Model
+Run the "python3 save_general_qa_as_json.py" to save the training and validation json file for General QA LoRA Model
 
-Run the "save_medical_qa_as_json.py" to save the training and validation json file for Medical QA LoRA Model
+Run the "python3 save_medical_qa_as_json.py" to save the training and validation json file for Medical QA LoRA Model
 
 ## Training the LoRA models
-Run the "PEFT_train_general_qa_lora.py" to train the General QA LoRA module
+Run the "python3 PEFT_train_general_qa_lora.py" to train the General QA LoRA module
 
-Run the "PEFT_train_medical_qa_lora.py" to train the Medical QA LoRA module
+Run the "python3 PEFT_train_medical_qa_lora.py" to train the Medical QA LoRA module
 
-Run the "PEFT_train_autoregressive.py" to train the autoregressive LoRA module
+Run the "python3 PEFT_train_autoregressive.py" to train the autoregressive LoRA module
 
 Running any of the training scipts will save the base model (Gemma-2B), the LoRA model and the PEFT merged model in pytorch. A validation check also shows if the saved model has LoRA parameters. For the PEFT merged model, it is normal if the LoRA parameters do not exist as the LoRA parameters have been merged directly into the base model’s weights during the merging process.
 
 ## Combining the LoRA module into the base model
-Run the "combine_general_qa_lora_and_base.py" to combine the General QA module with the base model
+Run the "python3 combine_general_qa_lora_and_base.py" to combine the General QA module with the base model
 
-Run the "combine_medical_qa_lora_and_base.py" to combine the Medical QA module with the base model
+Run the "python3 combine_medical_qa_lora_and_base.py" to combine the Medical QA module with the base model
 
-Run the "combine_autoregressive_qa_lora_and_base.py" to combine the Medical Autoregressive module with the base model
+Run the "python3 combine_autoregressive_qa_lora_and_base.py" to combine the Medical Autoregressive module with the base model
 
-Run the "combine_general_qa_lora_and_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
+Run the "python3 combine_general_qa_lora_and_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
 
 ## Evaluating
-Run the "evaluate_general_qa.py" to evaluate the General QA LoRA model
+Run the "python3 evaluate_general_qa.py" to evaluate the General QA LoRA model
 
-Run the "evaluate_medical_qa.py" to evaluate the Medical QA LoRA model
+Run the "python3 evaluate_medical_qa.py" to evaluate the Medical QA LoRA model
 
-Run the "evaluate_autoregressive_model.py" to evaluate the Medical Autoregressive LoRA model
+Run the "python3 evaluate_autoregressive_model.py" to evaluate the Medical Autoregressive LoRA model
 
-Run the "evaluate_general_qa_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
+Run the "python3 evaluate_general_qa_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
 
 ## Discussion
 While the Custom Combined General QA + Medical Autoregressive Model did not perform as well as the Medical QA Model, it did perform slightly better than the base model and demonstrated significant improvements over the individual General QA and Medical Autoregressive models on the Medical QA test dataset. Please refer to Appendix 2.
