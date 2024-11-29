@@ -48,10 +48,10 @@ Run the "combine_autoregressive_qa_lora_and_base.py" to combine the Medical Auto
 Run the "combine_general_qa_lora_and_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
 
 ## Evaluating
-Run the "combine_general_qa_lora_and_base.py" to combine the General QA LoRA model
+Run the "evaluate_general_qa.py" to evaluate the General QA LoRA model
 
-Run the "combine_medical_qa_lora_and_base.py" to evaluate the Medical QA LoRA model
+Run the "evaluate_medical_qa.py" to evaluate the Medical QA LoRA model
 
 Run the "evaluate_autoregressive_model.py" to evaluate the Medical Autoregressive LoRA model
 
-Run the "combine_general_qa_lora_and_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
+Run the "evaluate_general_qa_medical_autoregressive.py" to combine the General QA LoRA module and Medical Autoregressive LoRA Module with the base model
