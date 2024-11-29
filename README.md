@@ -15,7 +15,8 @@ Website: https://www.kaggle.com/datasets/gvaldenebro/cancer-q-and-a-dataset
 General Medical articles. 79 articles were used.
 
 ## Conversion of Dataset
-
+Run the "save_general_qa_as_json.py" to save the training and validation json file for General QA LoRA Model
+Run the "save_medical_qa_as_json.py" to save the training and validation json file for Medical QA LoRA Model
 ## Training
 
 ## Evaluating
