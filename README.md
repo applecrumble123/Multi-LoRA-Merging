@@ -18,6 +18,10 @@ General Medical articles. 79 articles were used.
 ## Conversion of Dataset
 Run the "save_general_qa_as_json.py" to save the training and validation json file for General QA LoRA Model
 Run the "save_medical_qa_as_json.py" to save the training and validation json file for Medical QA LoRA Model
-## Training
+
+## Training the LoRA model
+Run the "" to train the medical autoregressive model
+
+Running any of the training scipts will save the base model (Gemma-2B), the LoRA model and the PEFT merged model in pytorch. A validation check also shows if the saved model has LoRA parameters. For the PEFT merged model, it is normal if the LoRA parameters do not exist as the LoRA parameters have been merged directly into the base model’s weights during the merging process.
 
 ## Evaluating
