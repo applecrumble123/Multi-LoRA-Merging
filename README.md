@@ -4,9 +4,10 @@ This study explores whether combining two Low-Rank Adaptation (LoRA) models, tra
 
 LoRA Paper: https://arxiv.org/abs/2106.09685
 
-Combining Two LoRA Models
-To evaluate the feasibility of integrating two LoRA modules, we extended the merging process to incorporate updates from both models sequentially:
+To evaluate the feasibility of integrating two LoRA modules, we extended the merging process to incorporate updates from both models sequentially: 
+
 W' = W + (α1 / r1) ⋅ (B1 ⋅ A1) + (α2 / r2) ⋅ (B2 ⋅ A2)
+
 where α1, r1 and α2, r2 are the scaling factors and ranks for the first and second LoRA models, respectively. The base model weights (W) are updated incrementally with the contributions of each LoRA module in a stepwise manner. The formula first applies the update from the first LoRA module (B1 ⋅ A1) scaled by (α1 / r1), modifying the base model weights to produce an intermediate state. Subsequently, the second module's update, (B2 ⋅ A2) scaled by (α2 / r2), is applied to this intermediate state, further refining the weights. Each step builds upon the results of the previous one.
 
 
