@@ -22,7 +22,7 @@ Download all the .csv files in the website below
 Website: https://www.kaggle.com/datasets/gvaldenebro/cancer-q-and-a-dataset
 
 ### Medical Corpus
-General Medical articles. 79 articles were used.
+General Medical articles. 79 articles were used. Run the "extract_pdf_to_text.py" to extract text from PDF articles and save it into a text file for training and testing the Medical Autoregressive LoRA model.
 
 ## Conversion of Dataset
 Run the "save_general_qa_as_json.py" to save the training and validation json file for General QA LoRA Model
