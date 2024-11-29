@@ -1,66 +1,61 @@
 import os
+import csv
 import json
 import random
+import re
 
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, TrainingArguments
-import torch
-from datasets import load_dataset, Dataset
-from trl import SFTConfig, SFTTrainer
-from peft import LoraConfig, TaskType, PeftModel
-import jsonlines as jl
+# Define paths
+input_csv_folder = "/mnt/c/Users/tohji/OneDrive/Desktop/medical_qa_csv"  # Folder containing your CSV files
+output_train_json_path = "/mnt/c/Users/tohji/OneDrive/Desktop/add_multiple_lora_to_base_model/dataset/medical_qa/train.jsonl"  # Single training JSON Lines file
+output_val_json_path = "/mnt/c/Users/tohji/OneDrive/Desktop/add_multiple_lora_to_base_model/dataset/medical_qa/val.jsonl"  # Single validation JSON Lines file
 
-# Paths
-root_folder = "/mnt/c/Users/tohji/OneDrive/Desktop/"
-original_train_json_path = os.path.join(root_folder, "add_multiple_lora_to_base_model/dataset/medical_qa/train.json")
+# Initialize empty lists for training and validation data
+train_data = []
+val_data = []
 
-# Paths for both JSON and JSON Lines formats
-saved_train_json_path = os.path.join(root_folder, "add_multiple_lora_to_base_model/dataset/medical_qa/new_train_data.json")
-saved_val_json_path = os.path.join(root_folder, "add_multiple_lora_to_base_model/dataset/medical_qa/new_val_data.json")
-train_jsonl_path = os.path.join(root_folder, "add_multiple_lora_to_base_model/dataset/medical_qa/new_train_data.jsonl")
-val_jsonl_path = os.path.join(root_folder, "add_multiple_lora_to_base_model/dataset/medical_qa/new_val_data.jsonl")
+# Function to clean response text
+def clean_text(text):
+    # Remove tabs and newlines, collapse multiple spaces into one
+    cleaned_text = re.sub(r"\s+", " ", text)
+    return cleaned_text.strip()
 
-# Load newline-delimited JSON file
-medical_qa_data = []
-with open(original_train_json_path, "r", encoding="utf-8") as f:
-    for line in f:
-        medical_qa_data.append(json.loads(line.strip()))
+# Function to process a single CSV file
+def process_csv(file_path):
+    data = []
+    with open(file_path, "r", encoding="utf-8") as csvfile:
+        reader = csv.DictReader(csvfile)  # Automatically reads headers
+        for row in reader:
+            question = row.get("Question", "").strip()
+            answer = row.get("Answer", "Unanswerable").strip()
+            answer = clean_text(answer)  # Clean response text
+            data.append({"instruction": question, "response": answer})
+    return data
 
-# Transform data to instruction-response format
-instruction_response_data = []
-for item in medical_qa_data:
-    instruction = item.get("question", "")
-    response = item.get("exp") or "Unanswerable"  # Default to "Unanswerable" if "exp" is missing
+# Process all CSV files in the input folder
+for filename in os.listdir(input_csv_folder):
+    if filename.endswith(".csv"):
+        input_file_path = os.path.join(input_csv_folder, filename)
 
-    instruction_response_data.append({
-        "instruction": instruction,
-        "response": response
-    })
+        # Read and process the CSV file
+        data = process_csv(input_file_path)
+        random.shuffle(data)  # Shuffle data for randomness
 
-# Shuffle data
-random.shuffle(instruction_response_data)
+        # Split into 90% train and 10% validation
+        split_index = int(len(data) * 0.9)
+        train_data.extend(data[:split_index])
+        val_data.extend(data[split_index:])
 
-# Split data: 90% for training, 10% for validation
-split_index = int(len(instruction_response_data) * 0.9)
-train_data = instruction_response_data[:split_index]
-val_data = instruction_response_data[split_index:]
-
-# Save to JSON files (array format)
-with open(saved_train_json_path, "w", encoding="utf-8") as train_file:
-    json.dump(train_data, train_file, indent=4)
-
-with open(saved_val_json_path, "w", encoding="utf-8") as val_file:
-    json.dump(val_data, val_file, indent=4)
-
-# Save training data to JSON Lines format
-with open(train_jsonl_path, "w", encoding="utf-8") as train_jsonl_file:
+# Save training data to a single JSON Lines file
+with open(output_train_json_path, "w", encoding="utf-8") as train_file:
     for entry in train_data:
-        json.dump(entry, train_jsonl_file)
-        train_jsonl_file.write("\n")
+        json.dump(entry, train_file)
+        train_file.write("\n")
 
-# Save validation data to JSON Lines format
-with open(val_jsonl_path, "w", encoding="utf-8") as val_jsonl_file:
+# Save validation data to a single JSON Lines file
+with open(output_val_json_path, "w", encoding="utf-8") as val_file:
     for entry in val_data:
-        json.dump(entry, val_jsonl_file)
-        val_jsonl_file.write("\n")
+        json.dump(entry, val_file)
+        val_file.write("\n")
 
-print("Data saved to JSON and JSON Lines formats.")
+print(f"Training data saved to {output_train_json_path}")
+print(f"Validation data saved to {output_val_json_path}")
